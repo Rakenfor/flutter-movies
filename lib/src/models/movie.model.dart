@@ -14,6 +14,7 @@ class MoviesList {
 }
 
 class Movie {
+  String uniqueId;
   String posterPath;
   bool adult;
   String overview;

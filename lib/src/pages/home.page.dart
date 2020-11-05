@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:movies/src/providers/movies_providers.dart';
-import 'package:movies/src/widgets/card_swiper_widget.dart';
-import 'package:movies/src/widgets/movie_horizontal.dart';
+import 'package:movies/src/providers/movies.providers.dart';
+import 'package:movies/src/search/search.delegate.dart';
+import 'package:movies/src/widgets/card_swiper.widget.dart';
+import 'package:movies/src/widgets/movie_horizontal.widget.dart';
 
 class HomePage extends StatelessWidget {
-  final moviesProvider = new Movies();
+  final moviesProvider = new MoviesProvider();
   @override
   Widget build(BuildContext context) {
     moviesProvider.getPopulars();
@@ -13,7 +14,12 @@ class HomePage extends StatelessWidget {
         title: Text('Películas en cines'),
         backgroundColor: Colors.deepPurple,
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.search), onPressed: () {})
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: Search());
+            },
+          ),
         ],
       ),
       body: Container(

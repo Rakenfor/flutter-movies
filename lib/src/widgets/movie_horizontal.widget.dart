@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movies/src/models/movie_model.dart';
+import 'package:movies/src/models/movie.model.dart';
 import 'package:flutter/cupertino.dart';
 
 class MovieHorizontal extends StatelessWidget {
@@ -33,18 +33,22 @@ class MovieHorizontal extends StatelessWidget {
   }
 
   Widget _card(BuildContext context, Movie movie) {
+    movie.uniqueId = '${movie.id}-poster';
     final card = Container(
       margin: EdgeInsets.only(left: 5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: FadeInImage(
-              image: NetworkImage(movie.getPosterImg()),
-              placeholder: AssetImage('assets/img/loading.gif'),
-              fit: BoxFit.cover,
-              height: 140.0,
+          Hero(
+            tag: movie.uniqueId,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: FadeInImage(
+                image: NetworkImage(movie.getPosterImg()),
+                placeholder: AssetImage('assets/img/loading.gif'),
+                fit: BoxFit.cover,
+                height: 140.0,
+              ),
             ),
           ),
           SizedBox(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movies/src/models/movie_model.dart';
+import 'package:movies/src/models/actor.model.dart';
+import 'package:movies/src/models/movie.model.dart';
+import 'package:movies/src/providers/movies.providers.dart';
 
 class MovieDetail extends StatelessWidget {
   @override
@@ -18,16 +20,7 @@ class MovieDetail extends StatelessWidget {
               ),
               _posterTitle(movie, context),
               _description(movie),
-              _description(movie),
-              _description(movie),
-              _description(movie),
-              _description(movie),
-              _description(movie),
-              _description(movie),
-              _description(movie),
-              _description(movie),
-              _description(movie),
-              _description(movie),
+              _createCasting(movie),
             ],
           ),
         ),
@@ -62,11 +55,14 @@ class MovieDetail extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: Image(
-              image: NetworkImage(movie.getPosterImg()),
-              height: 150.0,
+          Hero(
+            tag: movie.uniqueId,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Image(
+                image: NetworkImage(movie.getPosterImg()),
+                height: 150.0,
+              ),
             ),
           ),
           SizedBox(
@@ -107,6 +103,60 @@ class MovieDetail extends StatelessWidget {
       child: Text(
         movie.overview,
         textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
+  Widget _createCasting(Movie movie) {
+    final moveiProvider = new MoviesProvider();
+
+    return FutureBuilder(
+      future: moveiProvider.getCast(movie.id.toString()),
+      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+        if (snapshot.hasData) {
+          return _createActorsPageView(snapshot.data);
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _createActorsPageView(List<Actor> actors) {
+    return SizedBox(
+      height: 200.0,
+      child: PageView.builder(
+        pageSnapping: false,
+        itemCount: actors.length,
+        controller: PageController(viewportFraction: 0.3, initialPage: 1),
+        itemBuilder: (context, i) {
+          return _actorCard(actors[i]);
+        },
+      ),
+    );
+  }
+
+  Widget _actorCard(Actor actor) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: FadeInImage(
+              placeholder: AssetImage('assets/img/loading.gif'),
+              image: NetworkImage(actor.getPhoto()),
+              height: 150.0,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Text(
+            actor.name,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
